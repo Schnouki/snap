@@ -2,6 +2,12 @@
 
 All the informations you need to use InstantClick are on the link above. This ReadMe’s purpose is about how to use and contribute to a development version of InstantClick.
 
+## Build
+```bash
+npm install
+npm run build
+```
+
 ## Tests
 
 Tests (in the `tests` folder) are PHP-generated HTML pages with which to check how InstantClick behaves on different browsers. That’s what I use before releasing a new version to make sure there are no obvious regressions.
