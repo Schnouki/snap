@@ -1,8 +1,9 @@
 {
-  "name": "instantclick",
+  "name": "@alexlur/instantclick",
   "version": "3.1.0",
   "description": "InstantClick JavaScript library",
-  "main": "index.js",
+  "main": "build/instantclick.js",
+  "jsnext:main": "src/index.js",
   "directories": {
     "test": "tests"
   },

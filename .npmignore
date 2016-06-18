@@ -1,0 +1,6 @@
+tests
+node_modules
+*.md
+.eslintignore
+.babelrc
+rollup.config.js
