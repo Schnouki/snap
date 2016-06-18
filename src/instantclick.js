@@ -1,5 +1,3 @@
-/* InstantClick 3.1.0 | (C) 2014-2015 Alexandre Dieulot | http://instantclick.io/license */
-
 const $userAgent = navigator.userAgent;
 
 // Internal variables
@@ -338,15 +336,8 @@ function syncload(scripts, i) {
 		const { parentNode, nextSibling } = script;
 		parentNode.removeChild(script);
 		parentNode.insertBefore(copy, nextSibling);
-		// real browsers:
-		copy.onload = function() {
+		copy.onload = function () {
 			syncload(scripts, i + 1);
-		};
-		// internet explorer:
-		copy.onreadystatechange = function() {
-			if (this.readyState == 'complete') {
-				syncload(scripts, i + 1);
-			}
 		};
 	}
 }
