@@ -2,7 +2,7 @@
 if (!String.prototype.includes) {
 	const toString = {}.toString;
 	const indexOf = ''.indexOf;
-	const includes = function includes(search) {
+	const includes = function includes(search, position?) {
 		if (this == null) {
 			throw TypeError();
 		}
@@ -13,7 +13,7 @@ if (!String.prototype.includes) {
 		const stringLength = string.length;
 		const searchString = String(search);
 		const searchLength = searchString.length;
-		const position = arguments.length > 1 ? arguments[1] : undefined;
+
 		// `ToInteger`
 		let pos = position ? Number(position) : 0;
 		if (pos != pos) { // better `isNaN`

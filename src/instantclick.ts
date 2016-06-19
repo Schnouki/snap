@@ -23,6 +23,7 @@ const $trackedAssets: Array<HTMLElement|string> = [];
 let $preloadOnMousedown: boolean;
 let $delayBeforePreload: number;
 
+type PageEvent = 'fetch' | 'receive' | 'restore' | 'change' | 'wait';
 type Callback = () => any;
 type ReceiveCallback = (url: string, body: HTMLBodyElement, title: string) => (boolean|{
 	body?: HTMLBodyElement,
@@ -85,7 +86,7 @@ function isPreloadable(a: HTMLAnchorElement): boolean {
 	return true;
 }
 
-function triggerPageEvent(eventType: string, arg1?, arg2?, arg3?) {
+function triggerPageEvent(eventType: PageEvent, arg1?, arg2?, arg3?) {
 	let returnValue;
 	for (const callback of $eventsCallbacks[eventType]) {
 		if (eventType == 'receive') {
@@ -110,9 +111,8 @@ function triggerPageEvent(eventType: string, arg1?, arg2?, arg3?) {
 
 function changePage(title: string, body, newUrl: string, scrollY?: number, pop?: boolean) {
 	document.documentElement.replaceChild(body, document.body);
-	/* We cannot just use `document.body = doc.body`, it causes Safari (tested
-		 5.1, 6.0 and Mobile 7.0) to execute script tags directly.
-	*/
+	// We cannot just use `document.body = doc.body`, it causes Safari (tested
+	// 5.1, 6.0 and Mobile 7.0) to execute script tags directly.
 
 	if (newUrl) {
 		if (location.href !== newUrl) {
@@ -185,12 +185,12 @@ function mousedownListener(e: MouseEvent) {
 	preload(a.href);
 }
 
-function mouseoverListener(e) {
+function mouseoverListener(e: MouseEvent) {
 	if ($lastTouchTimestamp > (Date.now() - 500)) {
 		return; // Otherwise, click doesn't fire
 	}
 
-	const a = getLinkTarget(e.target);
+	const a = getLinkTarget(<HTMLAnchorElement>e.target);
 	if (!a || !isPreloadable(a)) return;
 
 	a.addEventListener('mouseout', mouseoutListener);
@@ -203,10 +203,10 @@ function mouseoverListener(e) {
 	}
 }
 
-function touchstartListener(e) {
+function touchstartListener(e: TouchEvent) {
 	$lastTouchTimestamp = Date.now();
 
-	const a = getLinkTarget(e.target);
+	const a = getLinkTarget(<HTMLAnchorElement>e.target);
 	if (!a || !isPreloadable(a)) return;
 
 	if ($preloadOnMousedown) {
@@ -217,8 +217,8 @@ function touchstartListener(e) {
 	preload(a.href);
 }
 
-function clickListener(e) {
-	const a = getLinkTarget(e.target);
+function clickListener(e: MouseEvent) {
+	const a = getLinkTarget(<HTMLAnchorElement>e.target);
 	if (!a || !isPreloadable(a)) return;
 
 	if (e.which > 1 || e.metaKey || e.ctrlKey) { // Opening in new tab
@@ -532,7 +532,9 @@ export function init(preloadingMode) {
 	const elems = document.head.children;
 	for (const elem of elems) {
 		if (elem.hasAttribute('data-instant-track')) {
-			const data = elem.getAttribute('href') || elem.getAttribute('src') || elem.innerHTML;
+			const data = elem.getAttribute('href')
+				|| elem.getAttribute('src')
+				|| elem.innerHTML;
 			/* We can't use just `elem.href` and `elem.src` because we can't
 				 retrieve `href`s and `src`s from the Ajax response.
 			*/
@@ -556,10 +558,10 @@ export function on(eventType: 'wait', callback: Callback): void;
 export function on(eventType: 'change', callback: ChangeCallback): void;
 export function on(eventType: 'restore', callback: Callback): void;
 
-export function on(eventType: string, callback) {
+export function on(eventType: PageEvent, callback: Function) {
 	$eventsCallbacks[eventType].push(callback);
 }
 
-export function off(eventType: string) {
+export function off(eventType: PageEvent) {
 	$eventsCallbacks[eventType] = [];
 }
