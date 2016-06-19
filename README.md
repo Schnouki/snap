@@ -5,7 +5,7 @@ All the informations you need to use InstantClick are on the link above. This Re
 ## Build
 ```bash
 npm install
-npm run build
+make all
 ```
 
 ## Tests
