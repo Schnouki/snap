@@ -46,8 +46,7 @@ function inc() {
 	$progress += 1 + (Math.random() * 2);
 	if ($progress > 99) {
 		$progress = 99;
-	}
-	else {
+	} else {
 		$timer = setTimeout(inc, 500);
 	}
 	update();

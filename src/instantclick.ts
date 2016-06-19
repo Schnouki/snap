@@ -248,7 +248,7 @@ function readystatechangeListener() {
 
 	$timing.ready = Date.now() - $timing.start;
 
-	if ($xhr.getResponseHeader('Content-Type').match(/\/(x|ht|xht)ml/)) {
+	if (/\/(x|ht|xht)ml/.test($xhr.getResponseHeader('Content-Type'))) {
 		const doc = document.implementation.createHTMLDocument('');
 		doc.documentElement.innerHTML = removeNoscriptTags($xhr.responseText);
 		$title = doc.title;
@@ -304,8 +304,8 @@ function popstateListener() {
 
 	if (!(loc in $history)) {
 		location.href = location.href;
-		/* Reloads the page while using cache for scripts, styles and images,
-			 unlike `location.reload()` */
+		// Reloads the page while using cache for scripts, styles and images,
+		// unlike `location.reload()`
 		return;
 	}
 
@@ -325,8 +325,7 @@ function syncload(scripts, i) {
 	if (i < scripts.length) {
 		const script = scripts[i];
 		if (script.hasAttribute('data-no-instant')) {
-			syncload(scripts, i + 1);
-			return;
+			return syncload(scripts, i + 1);
 		}
 		const copy = document.createElement('script');
 		if (script.src) {
@@ -336,11 +335,12 @@ function syncload(scripts, i) {
 			copy.innerHTML = script.innerHTML;
 		}
 		const { parentNode, nextSibling } = script;
-		parentNode.removeChild(script);
-		parentNode.insertBefore(copy, nextSibling);
 		copy.onload = function () {
 			syncload(scripts, i + 1);
 		};
+
+		parentNode.removeChild(script);
+		parentNode.insertBefore(copy, nextSibling);
 	}
 }
 
@@ -432,7 +432,7 @@ function display(url: string) {
 			 a website.
 		*/
 
-		if ($preloadTimer && $url && $url != url) {
+		if ($preloadTimer && $url && $url !== url) {
 			/* Happens when the user clicks on a link before preloading
 				 kicks in while another link is already preloading.
 			*/
@@ -475,8 +475,8 @@ function display(url: string) {
 ////////// PUBLIC VARIABLE AND FUNCTIONS //////////
 
 export const supported = history.pushState
-	&& (!$userAgent.match('Android') || $userAgent.match('Chrome/'))
-	&& location.protocol != 'file:';
+	&& (!$userAgent.includes('Android') || $userAgent.includes('Chrome/'))
+	&& location.protocol !== 'file:';
 
 /* The (sad) state of Android's AOSP browsers:
 
@@ -529,7 +529,7 @@ export function init(preloadingMode) {
 		scrollY: pageYOffset
 	};
 
-	const elems = <HTMLElement[]><any>document.head.children;
+	const elems = document.head.children;
 	for (const elem of elems) {
 		if (elem.hasAttribute('data-instant-track')) {
 			const data = elem.getAttribute('href') || elem.getAttribute('src') || elem.innerHTML;
