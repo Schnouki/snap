@@ -1,28 +1,42 @@
 const $userAgent = navigator.userAgent;
 
 // Internal variables
-const $isChromeForIOS = $userAgent.includes(' CriOS/');
-let $currentLocationWithoutHash;
-let $urlToPreload;
-let $preloadTimer;
-let $lastTouchTimestamp;
+const $isChromeForIOS: boolean = $userAgent.includes(' CriOS/');
+let $currentLocationWithoutHash: string;
+let $urlToPreload: string;
+let $preloadTimer: number;
+let $lastTouchTimestamp: number;
 
 // Preloading-related variables;
 const $history = Object.create(null);
-let $xhr;
-let $url = false;
-let $title = false;
+let $xhr: XMLHttpRequest;
+let $url: string;
+let $title: string;
 let $mustRedirect = false;
-let $body = false;
-let $timing = {};
+let $body: HTMLBodyElement;
+let $timing: { start?: number, ready?: number, display?: number } = {};
 let $isPreloading = false;
 let $isWaitingForCompletion = false;
-const $trackedAssets = [];
+const $trackedAssets: Array<HTMLElement|string> = [];
 
 // Variables defined by public functions;
-let $preloadOnMousedown;
-let $delayBeforePreload;
-const $eventsCallbacks = {
+let $preloadOnMousedown: boolean;
+let $delayBeforePreload: number;
+
+type Callback = () => any;
+type ReceiveCallback = (url: string, body: HTMLBodyElement, title: string) => (boolean|{
+	body?: HTMLBodyElement,
+	title?: string
+});
+type ChangeCallback = (isInitialLoad: boolean) => any;
+
+const $eventsCallbacks: {
+	fetch: Callback[],
+	receive: ReceiveCallback[],
+	wait: Callback[],
+	change: ChangeCallback[],
+	restore: Callback[]
+} = {
 	fetch: [],
 	receive: [],
 	wait: [],
@@ -33,7 +47,7 @@ const $eventsCallbacks = {
 ////////// HELPERS //////////
 
 
-function removeHash(url) {
+function removeHash(url: string): string {
 	const index = url.indexOf('#');
 	if (index < 0) {
 		return url;
@@ -41,23 +55,23 @@ function removeHash(url) {
 	return url.substr(0, index);
 }
 
-function getLinkTarget(target) {
+function getLinkTarget(target: Element): HTMLAnchorElement {
 	while (target && target.nodeName != 'A') {
-		target = target.parentNode;
+		target = <Element>target.parentNode;
 	}
-	return target;
+	return <HTMLAnchorElement>target;
 }
 
-function isBlacklisted(elem) {
+function isBlacklisted(elem: Element): boolean {
 	do {
 		if (!elem.hasAttribute) break; // Parent of <html>
 		if (elem.hasAttribute('data-instant')) return false;
 		if (elem.hasAttribute('data-no-instant')) return true;
-	} while ((elem = elem.parentNode));
+	} while ((elem = <Element>elem.parentNode));
 	return false;
 }
 
-function isPreloadable(a) {
+function isPreloadable(a: HTMLAnchorElement): boolean {
 	const domain = location.protocol + '//' + location.host;
 
 	if (a.target // target="_blank" etc.
@@ -71,8 +85,8 @@ function isPreloadable(a) {
 	return true;
 }
 
-function triggerPageEvent(eventType, arg1, arg2, arg3) {
-	let returnValue = false;
+function triggerPageEvent(eventType: string, arg1?, arg2?, arg3?) {
+	let returnValue;
 	for (const callback of $eventsCallbacks[eventType]) {
 		if (eventType == 'receive') {
 			const altered = callback(arg1, arg2, arg3);
@@ -94,7 +108,7 @@ function triggerPageEvent(eventType, arg1, arg2, arg3) {
 	return returnValue;
 }
 
-function changePage(title, body, newUrl, scrollY, pop) {
+function changePage(title: string, body, newUrl: string, scrollY?: number, pop?: boolean) {
 	document.documentElement.replaceChild(body, document.body);
 	/* We cannot just use `document.body = doc.body`, it causes Safari (tested
 		 5.1, 6.0 and Mobile 7.0) to execute script tags directly.
@@ -104,15 +118,16 @@ function changePage(title, body, newUrl, scrollY, pop) {
 		if (location.href !== newUrl) {
 			history.pushState(null, null, newUrl);
 		}
-		const hashIndex = newUrl.indexOf('#');
+		const hashIndex: number = newUrl.indexOf('#');
+		let offset: number = 0;
 		let hashElem = hashIndex > -1
 			&& document.getElementById(newUrl.substr(hashIndex + 1));
-		let offset = 0;
+
 
 		if (hashElem) {
 			while (hashElem.offsetParent) {
 				offset += hashElem.offsetTop;
-				hashElem = hashElem.offsetParent;
+				hashElem = <HTMLElement> hashElem.offsetParent;
 			}
 		}
 		scrollTo(0, offset);
@@ -122,7 +137,7 @@ function changePage(title, body, newUrl, scrollY, pop) {
 		scrollTo(0, scrollY);
 	}
 
-	if ($isChromeForIOS && document.title == title) {
+	if ($isChromeForIOS && document.title === title) {
 		/* Chrome for iOS:
 		 *
 		 * 1. Removes title on pushState, so the title needs to be set after.
@@ -148,7 +163,7 @@ function setPreloadingAsHalted() {
 	$isWaitingForCompletion = false;
 }
 
-function removeNoscriptTags(html) {
+function removeNoscriptTags(html: string): string {
 	/* Must be done on text, not on a node's innerHTML, otherwise strange
 	 * things happen with implicitly closed elements (see the Noscript test).
 	 */
@@ -159,12 +174,12 @@ function removeNoscriptTags(html) {
 ////////// EVENT LISTENERS //////////
 
 
-function mousedownListener(e) {
+function mousedownListener(e: MouseEvent) {
 	if ($lastTouchTimestamp > (Date.now() - 500)) {
 		return; // Otherwise, click doesn't fire
 	}
 
-	const a = getLinkTarget(e.target);
+	const a = getLinkTarget(<HTMLAnchorElement>e.target);
 	if (!a || !isPreloadable(a)) return;
 
 	preload(a.href);
@@ -204,10 +219,7 @@ function touchstartListener(e) {
 
 function clickListener(e) {
 	const a = getLinkTarget(e.target);
-
-	if (!a || !isPreloadable(a)) {
-		return;
-	}
+	if (!a || !isPreloadable(a)) return;
 
 	if (e.which > 1 || e.metaKey || e.ctrlKey) { // Opening in new tab
 		return;
@@ -219,7 +231,7 @@ function clickListener(e) {
 function mouseoutListener() {
 	if ($preloadTimer) {
 		clearTimeout($preloadTimer);
-		$preloadTimer = false;
+		$preloadTimer = undefined;
 		return;
 	}
 
@@ -231,13 +243,8 @@ function mouseoutListener() {
 }
 
 function readystatechangeListener() {
-	if ($xhr.readyState < 4) {
-		return;
-	}
-	if ($xhr.status == 0) {
-		/* Request aborted */
-		return;
-	}
+	if ($xhr.readyState < 4) return;
+	if ($xhr.status == 0) return; /* Request aborted */
 
 	$timing.ready = Date.now() - $timing.start;
 
@@ -245,7 +252,7 @@ function readystatechangeListener() {
 		const doc = document.implementation.createHTMLDocument('');
 		doc.documentElement.innerHTML = removeNoscriptTags($xhr.responseText);
 		$title = doc.title;
-		$body = doc.body;
+		$body = <HTMLBodyElement>doc.body;
 
 		const alteredOnReceive = triggerPageEvent('receive', $url, $body, $title);
 		if (alteredOnReceive) {
@@ -264,7 +271,7 @@ function readystatechangeListener() {
 			scrollY: urlWithoutHash in $history ? $history[urlWithoutHash].scrollY : 0
 		};
 
-		const elems = doc.head.children;
+		const elems = <HTMLElement[]><any>doc.head.children;
 		let found = 0;
 
 		for (const elem of elems) {
@@ -274,17 +281,14 @@ function readystatechangeListener() {
 					|| elem.innerHTML;
 
 				for (const asset of $trackedAssets) {
-					if (asset == data) {
-						found++;
-					}
+					if (asset === data) found++;
 				}
 			}
 		}
-		if (found != $trackedAssets.length) {
+		if (found !== $trackedAssets.length) {
 			$mustRedirect = true; // Assets have changed
 		}
-	}
-	else {
+	} else {
 		$mustRedirect = true; // Not an HTML document
 	}
 
@@ -296,9 +300,7 @@ function readystatechangeListener() {
 
 function popstateListener() {
 	const loc = removeHash(location.href);
-	if (loc == $currentLocationWithoutHash) {
-		return;
-	}
+	if (loc == $currentLocationWithoutHash) return;
 
 	if (!(loc in $history)) {
 		location.href = location.href;
@@ -312,7 +314,7 @@ function popstateListener() {
 	changePage(
 		$history[loc].title,
 		$history[loc].body,
-		false,
+		'',
 		$history[loc].scrollY,
 		true
 	);
@@ -342,7 +344,7 @@ function syncload(scripts, i) {
 	}
 }
 
-function instantanize(isInitializing) {
+function instantanize(isInitializing?: boolean) {
 	const { body } = document;
 	body.addEventListener('touchstart', touchstartListener, true);
 	if ($preloadOnMousedown) {
@@ -357,7 +359,7 @@ function instantanize(isInitializing) {
 	}
 }
 
-export function preload(url) {
+export function preload(url: string) {
 	if (!$preloadOnMousedown
 			&& 'display' in $timing
 			&& Date.now() - ($timing.start + $timing.display) < 100) {
@@ -383,7 +385,7 @@ export function preload(url) {
 	}
 	if ($preloadTimer) {
 		clearTimeout($preloadTimer);
-		$preloadTimer = false;
+		$preloadTimer = undefined;
 	}
 
 	if (!url) {
@@ -397,7 +399,7 @@ export function preload(url) {
 	$isWaitingForCompletion = false;
 
 	$url = url;
-	$body = false;
+	$body = undefined;
 	$mustRedirect = false;
 	$timing = {
 		start: Date.now()
@@ -407,7 +409,7 @@ export function preload(url) {
 	$xhr.send();
 }
 
-function display(url) {
+function display(url: string) {
 	if (!('display' in $timing)) {
 		$timing.display = Date.now() - $timing.start;
 	}
@@ -527,7 +529,7 @@ export function init(preloadingMode) {
 		scrollY: pageYOffset
 	};
 
-	const elems = document.head.children;
+	const elems = <HTMLElement[]><any>document.head.children;
 	for (const elem of elems) {
 		if (elem.hasAttribute('data-instant-track')) {
 			const data = elem.getAttribute('href') || elem.getAttribute('src') || elem.innerHTML;
@@ -548,10 +550,16 @@ export function init(preloadingMode) {
 	addEventListener('popstate', popstateListener);
 }
 
-export function on(eventType, callback) {
+export function on(eventType: 'fetch', callback: Callback): void;
+export function on(eventType: 'receive', callback: ReceiveCallback): void;
+export function on(eventType: 'wait', callback: Callback): void;
+export function on(eventType: 'change', callback: ChangeCallback): void;
+export function on(eventType: 'restore', callback: Callback): void;
+
+export function on(eventType: string, callback) {
 	$eventsCallbacks[eventType].push(callback);
 }
 
-export function off(eventType) {
+export function off(eventType: string) {
 	$eventsCallbacks[eventType] = [];
 }

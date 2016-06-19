@@ -3,11 +3,11 @@
 
 import { on, supported } from './instantclick';
 
-let $container
-	, $element
-	, $progress
-	, $timer
-	, $hasTouch = 'createTouch' in document;
+let $container: HTMLDivElement;
+let $element: HTMLDivElement;
+let $progress: number;
+let $timer: number;
+let $hasTouch: boolean = 'createTouch' in document;
 
 function init() {
 	$container = document.createElement('div');
@@ -79,21 +79,19 @@ function updatePositionAndScale() {
 	$container.style.width = document.body.clientWidth + 'px';
 	$container.style.top = pageYOffset + 'px';
 
-	const landscape = 'orientation' in window && Math.abs(orientation) == 90
-		, scaleY = innerWidth / screen[landscape ? 'height' : 'width'] * 1.34;
+	const landscape: boolean = 'orientation' in window && Math.abs(<number>orientation) === 90;
+	const scaleY: number = innerWidth / screen[landscape ? 'height' : 'width'] * 1.34;
 	/* We multiply the size by 2 because the progress bar is harder
 		 to notice on a mobile device.
 	*/
 	$container.style.transform = 'scaleY(' + scaleY  + ')';
 }
 
-
 ////////////////////
-on('change', function(isInitialPage) {
+on('change', function (isInitialPage) {
 	if (isInitialPage && supported) {
 		init();
-	}
-	else if (!isInitialPage) {
+	} else if (!isInitialPage) {
 		done();
 	}
 });
