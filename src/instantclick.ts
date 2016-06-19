@@ -517,8 +517,7 @@ export function init(preloadingMode) {
 
 	if (preloadingMode == 'mousedown') {
 		$preloadOnMousedown = true;
-	}
-	else if (typeof preloadingMode == 'number') {
+	} else if (typeof preloadingMode == 'number') {
 		$delayBeforePreload = preloadingMode;
 	}
 
