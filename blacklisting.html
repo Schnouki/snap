@@ -76,37 +76,6 @@
 <p>If you’d like to blacklist all links by default, and then whitelist links one by one, or whitelist only links in a container, add a <code>data-no-instant</code> attribute to the <code>&lt;body&gt;</code> and a <code>data-instant</code> attribute to the container/links.
 <!-- I haven’t tested, but it should work. -->
 
-<h2>Whitelist mode</h2>
-
-<p class="warning">The following is deprecated and will likely be removed in 4.0. It’s only useful to know if you’re dealing with a website that has it activated (the <code>true</code> argument is passed to <code>snap.init</code>).
-
-<p class="warning">The Correct Way™: If you want to accomplish the same as the whitelist mode, just add <code>data-no-instant</code> to your <code>&lt;body&gt;</code>, as described in “Whitelist a link or group of links”.
-
-<p>The whitelist mode is enabled by passing a <code>true</code> argument to <code>snap.init</code>.
-
-<div class="gist">
-<div class="gist-file">
-<div class="gist-data gist-syntax">
-<div class="file-data">
-<table cellpadding="0" cellspacing="0" class="lines highlight">
-<tr>
-<td class="line-numbers">
-<span class="line-number" rel="file-gistfile1-js-L1">1</span>
-<span class="line-number" rel="file-gistfile1-js-L2">2</span>
-<span class="line-number" rel="file-gistfile1-js-L3">3</span>
-<span class="line-number" rel="file-gistfile1-js-L4">4</span>
-<span class="line-number" rel="file-gistfile1-js-L5">5</span>
-</td>
-<td class="line-data">
-<pre class="line-pre"><div class="line"><span class="nx">snap</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span></div><div class="line"><span class="cm">/* or */</span></div><div class="line"><span class="nx">snap</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span></div><div class="line"><span class="cm">/* or */</span></div><div class="line"><span class="nx">snap</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="s1">&#39;mousedown&#39;</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span></div></pre>
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-</div>
-
 <p class="prev-next">
   <a class="next" href="scripts.html">Events and script re-evaluation</a>
   <a class="prev" href="preloading.html">Preloading</a>

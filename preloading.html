@@ -29,7 +29,7 @@
 
 <p>Preload when the user presses his mouse button (the click happens on release). This brings nearly zero overhead to your server and still brings a “magical” speed boost.
 
-<p>To use, pass <code>'mousedown'</code> as an argument to <code>snap.init</code>.
+<p>To use, pass <code>'mousedown'</code> to <code>snap.init</code>.
 
 <div class="gist">
 <div class="gist-file">
@@ -41,7 +41,7 @@
 <span class="line-number" rel="file-gistfile1-js-L1">1</span>
 </td>
 <td class="line-data">
-<pre class="line-pre"><div class="line"><span class="nx">snap</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="s1">&#39;mousedown&#39;</span><span class="p">);</span></div></pre>
+<pre class="line-pre"><div class="line"><span class="nx">snap</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span>{ preloadingMode: <span class="s1">&#39;mousedown&#39;</span> }<span class="p">);</span></div></pre>
 </td>
 </tr>
 </table>
@@ -56,7 +56,7 @@
 
 <p>Recommended delays are 100 ms and 50 ms. More than 100 ms may actually be worse than on mousedown (below), less than 50 ms likely won’t be perceptible.
 
-<p>To make snap preload after a delay, pass the delay in milliseconds as an argument to <code>snap.init</code>.
+<p>To make snap preload after a delay, pass the delay in milliseconds to <code>snap.init</code>.
 
 <div class="gist">
 <div class="gist-file">
@@ -68,7 +68,7 @@
 <span class="line-number" rel="file-gistfile1-js-L1">1</span>
 </td>
 <td class="line-data">
-<pre class="line-pre"><div class="line"><span class="nx">snap</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="mi">50</span><span class="p">);</span></div></pre>
+<pre class="line-pre"><div class="line"><span class="nx">snap</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span>{ delay: <span class="mi">50</span> }<span class="p">);</span></div></pre>
 </td>
 </tr>
 </table>
