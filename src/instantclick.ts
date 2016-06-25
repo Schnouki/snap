@@ -14,7 +14,7 @@ let $url: string;
 let $title: string;
 let $mustRedirect = false;
 let $body: HTMLBodyElement;
-let $timing: { start?: number, ready?: number, display?: number } = {};
+let $timing: { start: number, ready?: number, display?: number } = {};
 let $isPreloading = false;
 let $isWaitingForCompletion = false;
 const $trackedAssets: Array<HTMLElement|string> = [];
@@ -404,7 +404,7 @@ export function preload(url: string) {
 	$timing = {
 		start: Date.now()
 	};
-	triggerPageEvent('fetch');
+	triggerPageEvent('fetch', $url);
 	$xhr.open('GET', url);
 	$xhr.send();
 }
