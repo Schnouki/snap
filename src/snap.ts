@@ -557,6 +557,7 @@ export function init(config: Config = {}) {
 
 	$xhr = new XMLHttpRequest();
 	$xhr.addEventListener('readystatechange', readystatechangeListener);
+	$xhr.addEventListener('progress', progressListener);
 
 	instantanize(true);
 

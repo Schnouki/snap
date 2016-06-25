@@ -9,7 +9,7 @@ import { on, supported } from './snap';
 
 let $container: HTMLDivElement;
 let $element: HTMLDivElement;
-let $progress: number;
+let $progress: number = 0;
 let $timer: number;
 let $hasTouch: boolean = 'createTouch' in document;
 
