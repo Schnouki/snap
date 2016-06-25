@@ -7,14 +7,22 @@ let $urlToPreload: string;
 let $preloadTimer: number;
 let $lastTouchTimestamp: number;
 
+interface HistoryRecord {
+	body: HTMLBodyElement;
+	title: string;
+	scrollY?: number;
+}
+
 // Preloading-related variables;
-const $history = Object.create(null);
+const $history: Map<string, HistoryRecord> = new Map;
+const $cache: Map<string, HistoryRecord> = new Map;
 let $xhr: XMLHttpRequest;
 let $url: string;
 let $title: string;
 let $mustRedirect = false;
 let $body: HTMLBodyElement;
-let $timing: { start: number, ready?: number, display?: number } = {};
+let $timing: { start?: number, ready?: number, display?: number } = {};
+let $isDynamic = true;
 let $isPreloading = false;
 let $isWaitingForCompletion = false;
 const $trackedAssets: Array<HTMLElement|string> = [];
@@ -77,6 +85,8 @@ function isPreloadable(a: HTMLAnchorElement): boolean {
 
 	if (a.target // target="_blank" etc.
 		|| a.hasAttribute('download')
+		|| !a.hasAttribute('href')
+		|| a.getAttribute('href').indexOf('#') === 0
 		|| a.href.indexOf(domain + '/') != 0 // Another domain, or no href attribute
 		|| (a.href.includes('#') && removeHash(a.href) == $currentLocationWithoutHash) // Anchor
 		|| isBlacklisted(a)
@@ -133,6 +143,10 @@ function changePage(title: string, body, newUrl: string, scrollY?: number, pop?:
 		scrollTo(0, offset);
 
 		$currentLocationWithoutHash = removeHash(newUrl);
+
+		if ($isDynamic) {
+			$cache.clear();
+		}
 	} else {
 		scrollTo(0, scrollY);
 	}
@@ -265,11 +279,16 @@ function readystatechangeListener() {
 		}
 
 		const urlWithoutHash = removeHash($url);
-		$history[urlWithoutHash] = {
+		const record: HistoryRecord = {
 			body: $body,
 			title: $title,
-			scrollY: urlWithoutHash in $history ? $history[urlWithoutHash].scrollY : 0
+			scrollY: $history.has(urlWithoutHash) ? $history.get(urlWithoutHash).scrollY : 0
 		};
+
+		$history.set(urlWithoutHash, record);
+		$cache.set(urlWithoutHash, record);
+
+		fetchImages(doc.images);
 
 		const elems = <HTMLElement[]><any>doc.head.children;
 		let found = 0;
@@ -302,20 +321,20 @@ function popstateListener() {
 	const loc = removeHash(location.href);
 	if (loc == $currentLocationWithoutHash) return;
 
-	if (!(loc in $history)) {
+	if (!$history.has(loc)) {
 		location.href = location.href;
 		// Reloads the page while using cache for scripts, styles and images,
 		// unlike `location.reload()`
 		return;
 	}
 
-	$history[$currentLocationWithoutHash].scrollY = pageYOffset;
+	$history.get($currentLocationWithoutHash).scrollY = pageYOffset;
 	$currentLocationWithoutHash = loc;
 	changePage(
-		$history[loc].title,
-		$history[loc].body,
+		$history.get(loc).title,
+		$history.get(loc).body,
 		'',
-		$history[loc].scrollY,
+		$history.get(loc).scrollY,
 		true
 	);
 }
@@ -392,9 +411,9 @@ export function preload(url: string) {
 		url = $urlToPreload;
 	}
 
-	if ($isPreloading && (url == $url || $isWaitingForCompletion)) {
-		return;
-	}
+	if ($isPreloading && (url == $url || $isWaitingForCompletion)) return;
+	if ($cache.has(url)) return;
+
 	$isPreloading = true;
 	$isWaitingForCompletion = false;
 
@@ -409,10 +428,33 @@ export function preload(url: string) {
 	$xhr.send();
 }
 
+function fetchImages(images: HTMLCollectionOf<HTMLImageElement>): HTMLImageElement[] {
+	const results = [];
+	for (const node of images) {
+		const img = new Image();
+		img.src = (<HTMLImageElement> node).src;
+		results.push(results);
+	}
+	return results;
+}
+
 function display(url: string) {
 	if (!('display' in $timing)) {
 		$timing.display = Date.now() - $timing.start;
 	}
+
+	if ($cache.has(url)) {
+		const record = $cache.get(url);
+		$body = record.body;
+		$title = record.title;
+		$url = url;
+
+		$history.get($currentLocationWithoutHash).scrollY = pageYOffset;
+		setPreloadingAsHalted();
+		changePage($title, $body, $url);
+		return;
+	}
+
 	if ($preloadTimer || !$isPreloading) {
 		/* $preloadTimer:
 			 Happens when there's a delay before preloading and that delay
@@ -461,12 +503,14 @@ function display(url: string) {
 		location.href = $url;
 		return;
 	}
+
 	if (!$body) {
 		triggerPageEvent('wait');
 		$isWaitingForCompletion = true;
 		return;
 	}
-	$history[$currentLocationWithoutHash].scrollY = pageYOffset;
+
+	$history.get($currentLocationWithoutHash).scrollY = pageYOffset;
 	setPreloadingAsHalted();
 	changePage($title, $body, $url);
 }
@@ -505,7 +549,13 @@ export const supported = history.pushState
 	 Because of this mess, the only whitelisted browser on Android is Chrome.
 */
 
-export function init(preloadingMode) {
+interface Config {
+	preloadingMode?: 'mousedown' | 'mouseover';
+	delay?: number;
+	static?: boolean;
+}
+
+export function init(config: Config = {}) {
 	if ($currentLocationWithoutHash) {
 		/* Already initialized */
 		return;
@@ -515,18 +565,23 @@ export function init(preloadingMode) {
 		return;
 	}
 
-	if (preloadingMode == 'mousedown') {
+	if (config.preloadingMode == 'mousedown') {
 		$preloadOnMousedown = true;
-	} else if (typeof preloadingMode == 'number') {
-		$delayBeforePreload = preloadingMode;
+	} else if (typeof config.delay == 'number') {
+		$delayBeforePreload = config.delay;
 	}
 
+	$isDynamic = !config.static;
+
 	$currentLocationWithoutHash = removeHash(location.href);
-	$history[$currentLocationWithoutHash] = {
-		body: document.body,
+	const record: HistoryRecord = {
+		body: <HTMLBodyElement> document.body,
 		title: document.title,
 		scrollY: pageYOffset
 	};
+
+	$history.set($currentLocationWithoutHash, record);
+	$cache.set($currentLocationWithoutHash, record);
 
 	const elems = document.head.children;
 	for (const elem of elems) {
@@ -557,7 +612,7 @@ export function on(eventType: 'wait', callback: Callback): void;
 export function on(eventType: 'change', callback: ChangeCallback): void;
 export function on(eventType: 'restore', callback: Callback): void;
 
-export function on(eventType: PageEvent, callback: Function) {
+export function on(eventType: PageEvent, callback) {
 	$eventsCallbacks[eventType].push(callback);
 }
 
