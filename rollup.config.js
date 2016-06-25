@@ -4,9 +4,12 @@ import typescript from 'rollup-plugin-typescript';
 
 export default {
 	entry: 'src/index.ts',
-	dest: 'build/instantclick.js',
 	format: 'umd',
 	moduleName: 'InstantClick',
+	targets: [
+		{	dest: 'build/instantclick.umd.js', format: 'umd' },
+		{	dest: 'build/instantclick.es.js', format: 'es' }
+	],
 	plugins: [
 		typescript(),
 		buble({ transforms: { dangerousForOf: true } }),

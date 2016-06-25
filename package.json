@@ -1,15 +1,16 @@
 {
   "name": "@alexlur/instantclick",
-  "version": "3.1.4",
+  "version": "3.1.6",
   "description": "InstantClick JavaScript library",
-  "main": "build/instantclick.js",
-  "jsnext:main": "src/index.js",
+  "main": "build/instantclick.umd.js",
+  "jsnext:main": "build/instantclick.es.js",
+  "typings": "typings/instantclick.d.ts",
   "directories": {
     "test": "tests"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "npm run build",
+    "prepublish": "npm run build",
     "build": "make all"
   },
   "repository": {
@@ -25,10 +26,10 @@
   },
   "homepage": "https://github.com/alexlur/instantclick#readme",
   "devDependencies": {
-    "rollup": "^0.31.2",
-    "rollup-plugin-buble": "^0.11.0",
-    "rollup-plugin-filesize": "^0.3.4",
-    "rollup-plugin-typescript": "^0.7.5",
-    "uglify-js": "^2.6.3"
+    "rollup": "^0.33.0",
+    "rollup-plugin-buble": "^0.12.1",
+    "rollup-plugin-filesize": "^0.4.4",
+    "rollup-plugin-typescript": "^0.7.6",
+    "uglify-js": "^2.6.4"
   }
 }

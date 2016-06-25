@@ -1,4 +1,5 @@
 tests
+src
 node_modules
 *.md
 .eslintignore

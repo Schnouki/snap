@@ -87,12 +87,22 @@ function updatePositionAndScale() {
 }
 
 ////////////////////
-on('change', function (isInitialPage) {
+on('change', function (isInitialPage: boolean) {
 	if (isInitialPage && supported) {
 		init();
 	} else if (!isInitialPage) {
 		done();
 	}
+});
+
+on('progress', function (loaded: number, total: number) {
+	if ($timer != null) {
+		clearTimeout($timer);
+		$timer = undefined;
+	}
+
+	$progress = loaded / total;
+	update();
 });
 
 on('wait', start);

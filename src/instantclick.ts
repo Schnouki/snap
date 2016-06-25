@@ -7,11 +7,6 @@ let $urlToPreload: string;
 let $preloadTimer: number;
 let $lastTouchTimestamp: number;
 
-interface HistoryRecord {
-	body: HTMLBodyElement;
-	title: string;
-	scrollY?: number;
-}
 
 // Preloading-related variables;
 const $history: Map<string, HistoryRecord> = new Map;
@@ -31,26 +26,20 @@ const $trackedAssets: Array<HTMLElement|string> = [];
 let $preloadOnMousedown: boolean;
 let $delayBeforePreload: number;
 
-type PageEvent = 'fetch' | 'receive' | 'restore' | 'change' | 'wait';
-type Callback = () => any;
-type ReceiveCallback = (url: string, body: HTMLBodyElement, title: string) => (boolean|{
-	body?: HTMLBodyElement,
-	title?: string
-});
-type ChangeCallback = (isInitialLoad: boolean) => any;
-
 const $eventsCallbacks: {
 	fetch: Callback[],
 	receive: ReceiveCallback[],
 	wait: Callback[],
 	change: ChangeCallback[],
-	restore: Callback[]
+	restore: Callback[],
+	progress: ProgressCallback[]
 } = {
 	fetch: [],
 	receive: [],
 	wait: [],
 	change: [],
-	restore: []
+	restore: [],
+	progress: []
 };
 
 ////////// HELPERS //////////
@@ -186,7 +175,6 @@ function removeNoscriptTags(html: string): string {
 
 
 ////////// EVENT LISTENERS //////////
-
 
 function mousedownListener(e: MouseEvent) {
 	if ($lastTouchTimestamp > (Date.now() - 500)) {
@@ -337,6 +325,12 @@ function popstateListener() {
 		$history.get(loc).scrollY,
 		true
 	);
+}
+
+function progressListener(e: ProgressEvent) {
+	if (e.lengthComputable) {
+		triggerPageEvent('progress', e.loaded, e.total);
+	}
 }
 
 ////////// MAIN FUNCTIONS //////////
@@ -549,12 +543,6 @@ export const supported = history.pushState
 	 Because of this mess, the only whitelisted browser on Android is Chrome.
 */
 
-interface Config {
-	preloadingMode?: 'mousedown' | 'mouseover';
-	delay?: number;
-	static?: boolean;
-}
-
 export function init(config: Config = {}) {
 	if ($currentLocationWithoutHash) {
 		/* Already initialized */
@@ -606,13 +594,7 @@ export function init(config: Config = {}) {
 	addEventListener('popstate', popstateListener);
 }
 
-export function on(eventType: 'fetch', callback: Callback): void;
-export function on(eventType: 'receive', callback: ReceiveCallback): void;
-export function on(eventType: 'wait', callback: Callback): void;
-export function on(eventType: 'change', callback: ChangeCallback): void;
-export function on(eventType: 'restore', callback: Callback): void;
-
-export function on(eventType: PageEvent, callback) {
+export function on(eventType: PageEvent, callback: Function) {
 	$eventsCallbacks[eventType].push(callback);
 }
 
