@@ -1,4 +1,5 @@
 # Snap
+PJAX library based on InstantClick with bug fixes and added functionalities such as image caching.
 
 ## Build
 ```bash
@@ -8,7 +9,7 @@ make all
 
 ## API
 ```typescript
-import * as Snap from '@alexlur/instantclick';
+import * as Snap from '@alexlur/snap';
 
 Snap.init({
   // Preload can be triggered either when users clicks the link, or
