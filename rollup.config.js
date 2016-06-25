@@ -5,10 +5,10 @@ import typescript from 'rollup-plugin-typescript';
 export default {
 	entry: 'src/index.ts',
 	format: 'umd',
-	moduleName: 'InstantClick',
+	moduleName: 'Snap',
 	targets: [
-		{	dest: 'build/instantclick.umd.js', format: 'umd' },
-		{	dest: 'build/instantclick.es.js', format: 'es' }
+		{	dest: 'build/snap.umd.js', format: 'umd' },
+		{	dest: 'build/snap.es.js', format: 'es' }
 	],
 	plugins: [
 		typescript(),

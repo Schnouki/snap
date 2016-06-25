@@ -1,7 +1,11 @@
-/* InstantClick's loading indicator | (C) 2014-2015 Alexandre Dieulot | http://instantclick.io/license */
+/* Based on InstantClick's loading indicator
+ * (C) 2014-2015 Alexandre Dieulot
+ * http://instantclick.io/license
+ */
+
 /* global orientation */
 
-import { on, supported } from './instantclick';
+import { on, supported } from './snap';
 
 let $container: HTMLDivElement;
 let $element: HTMLDivElement;

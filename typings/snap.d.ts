@@ -19,7 +19,7 @@ interface Config {
 	static?: boolean;
 }
 
-declare module '@alexlur/instantclick' {
+declare module '@alexlur/snap' {
 	export function init(config: Config): void;
 	export function preload(url: string): void;
 	export function on(eventType: 'fetch', callback: Callback): void;

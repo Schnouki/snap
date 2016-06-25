@@ -1,4 +1,4 @@
-name=instantclick
+name=snap
 
 build/$(name).umd.js: src/index.ts src/$(name).ts src/loading-indicator.ts vendor/polyfill.ts
 	rollup -c

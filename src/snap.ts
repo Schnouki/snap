@@ -7,7 +7,6 @@ let $urlToPreload: string;
 let $preloadTimer: number;
 let $lastTouchTimestamp: number;
 
-
 // Preloading-related variables;
 const $history: Map<string, HistoryRecord> = new Map;
 const $cache: Map<string, HistoryRecord> = new Map;
@@ -513,35 +512,7 @@ function display(url: string) {
 ////////// PUBLIC VARIABLE AND FUNCTIONS //////////
 
 export const supported = history.pushState
-	&& (!$userAgent.includes('Android') || $userAgent.includes('Chrome/'))
 	&& location.protocol !== 'file:';
-
-/* The (sad) state of Android's AOSP browsers:
-
-	 2.3.7: pushState appears to work correctly, but
-					`doc.documentElement.innerHTML = body` is buggy.
-					Update: InstantClick doesn't use that anymore, but it may
-					fail where 3.0 do, this needs testing again.
-
-	 3.0:   pushState appears to work correctly (though the address bar is
-					only updated on focus), but
-					`document.documentElement.replaceChild(doc.body, document.body)`
-					throws DOMException: WRONG_DOCUMENT_ERR.
-
-	 4.0.2: Doesn't support pushState.
-
-	 4.0.4,
-	 4.1.1,
-	 4.2,
-	 4.3:   Claims support for pushState, but doesn't update the address bar.
-
-	 4.4:   Works correctly. Claims to be 'Chrome/30.0.0.0'.
-
-	 All androids tested with Android SDK's Emulator.
-	 Version numbers are from the browser's user agent.
-
-	 Because of this mess, the only whitelisted browser on Android is Chrome.
-*/
 
 export function init(config: Config = {}) {
 	if ($currentLocationWithoutHash) {
