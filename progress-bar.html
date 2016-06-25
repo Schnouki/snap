@@ -1,0 +1,121 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Customizing the progress bar in snap</title>
+<meta name="viewport" content="width=768">
+<link href="style.css" rel="stylesheet">
+<link rel="canonical" href="progress-bar.html">
+
+<header id="header">
+  <div class="logo"><a href="index.html">snap</a></div>
+  <ul>
+    <li><a href="documentation.html">Documentation</a>
+    <li><a href="click-test.html">Click test</a>
+  </ul>
+</header>
+<article class="container">
+<h1>Customizing the progress bar</h1>
+
+<p>The progress bar is a fake progress bar, just there to give your users a sense that something is happening.
+
+<p class="warning">In the future, it should be possible to make the bar show real progress (by looking at the server’s <code>Content-Length</code> header).
+
+<p class="warning">The bar is displayed even if the page has been loaded instantly, in the future this will change. <a href="https://github.com/dieulot/instantclick/issues/58">Discussion on GitHub</a>.
+
+<p>When the visitor zooms on the page or rotates his device, the bar’s size and position automatically adjust, so it works even if your site isn’t optimized for mobile.
+
+<p>By default, the progress bar’s color is <code style="background: #29d">#29d</code>, you can change that with CSS:
+
+<div class="gist">
+<div class="gist-file">
+<div class="gist-data gist-syntax">
+<div class="file-data">
+<table cellpadding="0" cellspacing="0" class="lines highlight">
+<tr>
+<td class="line-numbers">
+<span class="line-number" rel="file-gistfile1-css-L1">1</span>
+<span class="line-number" rel="file-gistfile1-css-L2">2</span>
+<span class="line-number" rel="file-gistfile1-css-L3">3</span>
+</td>
+<td class="line-data">
+<pre class="line-pre"><div class="line"><span class="nf">#instantclick-bar</span> <span class="p">{</span></div><div class="line">  <span class="k">background</span><span class="o">:</span> <span class="nb">white</span><span class="p">;</span></div><div class="line"><span class="p">}</span></div></pre>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<p>You may also make the bar go away:
+
+<div class="gist">
+<div class="gist-file">
+<div class="gist-data gist-syntax">
+<div class="file-data">
+<table cellpadding="0" cellspacing="0" class="lines highlight">
+<tr>
+<td class="line-numbers">
+<span class="line-number" rel="file-gistfile1-css-L1">1</span>
+<span class="line-number" rel="file-gistfile1-css-L2">2</span>
+<span class="line-number" rel="file-gistfile1-css-L3">3</span>
+</td>
+<td class="line-data">
+<pre class="line-pre"><div class="line"><span class="nf">#instantclick</span> <span class="p">{</span></div><div class="line">  <span class="k">display</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span></div><div class="line"><span class="p">}</span></div></pre>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<p class="warning">The way to make the bar go away isn’t optimal. In a later version of snap it will be possible not to have it run by passing an argument to <code>snap.init</code>.
+
+<p class="prev-next">
+  <a class="next" href="roadmap.html">Roadmap</a>
+  <a class="prev" href="assets-changes.html">Tracking assets changes</a>
+
+<div class="toc">
+  <h3>Documentation table of contents</h3>
+
+  <h4>Getting started</h4>
+  <div class="chapters">
+    <li>
+      1.
+      <a href="download.html">Get started</a>
+    <li>
+      2.
+      <a href="how-it-works.html">How it works</a>
+    <li>
+      3.
+      <a href="preloading.html">Preloading</a>
+    <li>
+      4.
+      <a href="blacklisting.html">Blacklisting</a>
+    <li>
+      5.
+      <a href="scripts.html">Events and script re-evaluation</a>
+  </div>
+  <h4>Go further</h4>
+  <div class="chapters">
+    <li>
+      1.
+      <a href="assets-changes.html">Tracking assets changes</a>
+    <li>
+      2.
+      Customizing the progress bar  </div>
+  <h4>Meta</h4>
+  <div class="chapters">
+    <li>
+      1.
+      <a href="roadmap.html">Roadmap</a>
+    <li>
+      2.
+      <a href="changelog.html">Changelog</a>
+  </div>
+</div></article>
+<div id="footer">
+  <p>snap is released under the <a href="license.html">MIT License</a>, © 2016 Alex Mattrick.
+  It is based on the work of <a href="http://instantclick.io">InstantClick</a> from Alexandre Dieulot.</p>
+</div>
+<script src="https://npmcdn.com/@alexlur/snap" data-no-instant></script>

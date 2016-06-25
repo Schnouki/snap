@@ -1,0 +1,138 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Tracking assets changes in snap</title>
+<meta name="viewport" content="width=768">
+<link href="style.css" rel="stylesheet">
+<link rel="canonical" href="assets-changes.html">
+
+<header id="header">
+  <div class="logo"><a href="index.html">snap</a></div>
+  <ul>
+    <li><a href="documentation.html">Documentation</a>
+    <li><a href="click-test.html">Click test</a>
+  </ul>
+</header>
+<article class="container">
+<h1>Tracking assets changes</h1>
+
+<p class="warning">The current way of tracking asset changes is currently a bit clumsy. It will probably be changed later in snap 4.0.
+
+<p>To check when a style sheet or script (either external or inline) is updated, add it a <code>data-instant-track</code> attribute:
+
+<div class="gist">
+<div class="gist-file">
+<div class="gist-data gist-syntax">
+<div class="file-data">
+<table cellpadding="0" cellspacing="0" class="lines highlight">
+<tr>
+<td class="line-numbers">
+<span class="line-number" rel="file-gistfile1-html-L1">1</span>
+<span class="line-number" rel="file-gistfile1-html-L2">2</span>
+<span class="line-number" rel="file-gistfile1-html-L3">3</span>
+<span class="line-number" rel="file-gistfile1-html-L4">4</span>
+<span class="line-number" rel="file-gistfile1-html-L5">5</span>
+</td>
+<td class="line-data">
+<pre class="line-pre"><div class="line"><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;style.css&quot;</span> <span class="na">data-instant-track</span><span class="nt">&gt;</span></div><div class="line"><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;script.js&quot;</span> <span class="na">data-instant-track</span><span class="nt">&gt;&lt;/script&gt;</span></div><div class="line">&nbsp;</div><div class="line"><span class="nt">&lt;style </span><span class="na">data-instant-track</span><span class="nt">&gt;body</span> <span class="p">{</span> <span class="k">background</span><span class="o">:</span> <span class="nb">aliceblue</span><span class="p">;</span> <span class="p">}</span><span class="nt">&lt;/style&gt;</span></div><div class="line"><span class="nt">&lt;script </span><span class="na">data-instant-track</span><span class="nt">&gt;</span><span class="nb">window</span><span class="p">.</span><span class="nx">timingStart</span> <span class="o">=</span> <span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">();</span><span class="nt">&lt;/script&gt;</span></div></pre>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<p>snap will check for changes in the <code>href</code> or <code>src</code> attributes if they exist. To indicate that a file is updated, modify its attribute:
+
+<div class="gist">
+<div class="gist-file">
+<div class="gist-data gist-syntax">
+<div class="file-data">
+<table cellpadding="0" cellspacing="0" class="lines highlight">
+<tr>
+<td class="line-numbers">
+<span class="line-number" rel="file-gistfile1-html-L1">1</span>
+<span class="line-number" rel="file-gistfile1-html-L2">2</span>
+</td>
+<td class="line-data">
+<pre class="line-pre"><div class="line"><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;style.css?20140308&quot;</span> <span class="na">data-instant-track</span><span class="nt">&gt;</span></div><div class="line"><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;script.js?20140308&quot;</span> <span class="na">data-instant-track</span><span class="nt">&gt;&lt;/script&gt;</span></div></pre>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<p>If it’s an inline script or style, snap will check for a change in the element’s content.
+
+<div class="gist">
+<div class="gist-file">
+<div class="gist-data gist-syntax">
+<div class="file-data">
+<table cellpadding="0" cellspacing="0" class="lines highlight">
+<tr>
+<td class="line-numbers">
+<span class="line-number" rel="file-gistfile1-html-L1">1</span>
+<span class="line-number" rel="file-gistfile1-html-L2">2</span>
+</td>
+<td class="line-data">
+<pre class="line-pre"><div class="line"><span class="nt">&lt;style </span><span class="na">data-instant-track</span><span class="nt">&gt;body</span> <span class="p">{</span> <span class="k">background</span><span class="o">:</span> <span class="nb">midnightblue</span><span class="p">;</span> <span class="k">font</span><span class="o">:</span> <span class="m">13px</span> <span class="n">Helvetica</span><span class="p">;</span> <span class="p">}</span><span class="nt">&lt;/style&gt;</span></div><div class="line"><span class="nt">&lt;script </span><span class="na">data-instant-track</span><span class="nt">&gt;</span><span class="kd">var</span> <span class="nx">timingStart</span> <span class="o">=</span> <span class="nx">performance</span> <span class="o">&amp;&amp;</span> <span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">();</span><span class="nt">&lt;/script&gt;</span></div></pre>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<p>When any change is detected, snap will reload the page, thus making the browser re-evaluate all scripts and styles.
+
+<p class="prev-next">
+  <a class="next" href="progress-bar.html">Customizing the progress bar</a>
+  <a class="prev" href="scripts.html">Events and script re-evaluation</a>
+
+<div class="toc">
+  <h3>Documentation table of contents</h3>
+
+  <h4>Getting started</h4>
+  <div class="chapters">
+    <li>
+      1.
+      <a href="download.html">Get started</a>
+    <li>
+      2.
+      <a href="how-it-works.html">How it works</a>
+    <li>
+      3.
+      <a href="preloading.html">Preloading</a>
+    <li>
+      4.
+      <a href="blacklisting.html">Blacklisting</a>
+    <li>
+      5.
+      <a href="scripts.html">Events and script re-evaluation</a>
+  </div>
+  <h4>Go further</h4>
+  <div class="chapters">
+    <li>
+      1.
+      Tracking assets changes    <li>
+      2.
+      <a href="progress-bar.html">Customizing the progress bar</a>
+  </div>
+  <h4>Meta</h4>
+  <div class="chapters">
+    <li>
+      1.
+      <a href="roadmap.html">Roadmap</a>
+    <li>
+      2.
+      <a href="changelog.html">Changelog</a>
+  </div>
+</div></article>
+<div id="footer">
+  <p>snap is released under the <a href="license.html">MIT License</a>, © 2016 Alex Mattrick.
+  It is based on the work of <a href="http://instantclick.io">InstantClick</a> from Alexandre Dieulot.</p>
+</div>
+<script src="https://npmcdn.com/@alexlur/snap" data-no-instant></script>

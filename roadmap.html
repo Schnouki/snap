@@ -1,0 +1,107 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Roadmap</title>
+<meta name="viewport" content="width=768">
+<link href="style.css" rel="stylesheet">
+<link rel="canonical" href="roadmap.html">
+
+<header id="header">
+  <div class="logo"><a href="index.html">snap</a></div>
+  <ul>
+    <li><a href="documentation.html">Documentation</a>
+    <li><a href="click-test.html">Click test</a>
+  </ul>
+</header>
+<article class="container">
+<h1>Roadmap</h1>
+
+<p>Nothing here is set in stone. This is a bird’s-eye view of what’s planned for Snap, not an exhaustive list. Actual progress will be much different than what’s listed here.
+
+<p>Items marked with <sup><b>LHF</b></sup> are low-hanging fruits: high reward for the effort.
+
+<h2>4.0 (breaking changes)</h2>
+
+<ul class="spacious">
+  <li>Better <a href="assets-changes.html">asset tracking</a>, probably with a simple <code>&lt;meta&gt;</code> tag.
+  <li><strike>Remove whitelist mode (<code>data-no-instant</code> on body can be used instead).</strike></li>
+</ul>
+
+<h2>4.1</h2>
+
+<ul class="spacious">
+  <li><sup><b>LHF</b></sup> Send a header when a page is preloaded with snap (<a href="https://github.com/dieulot/instantclick/issues/71">#71</a>).
+  <li>Allow to set a different preloading mode (mouseover, delay, mousedown) for each link/container (<a href="https://github.com/dieulot/instantclick/issues/68">#68</a>).
+</ul>
+
+<h2>4.2</h2>
+
+<ul class="spacious">
+  <li>Decouple progress bar from core code (<a href="https://github.com/dieulot/instantclick/issues/58">#58</a>).
+  <li><sup><b>LHF</b></sup> Make the progress bar show only after 80–100 ms if the page hasn’t been displayed (<a href="https://github.com/dieulot/instantclick/issues/58">#58</a>).
+  <li>Allow to replace only a container, instead of the whole body, like <a href="https://github.com/defunkt/jquery-pjax">jquery-pjax</a> does.
+</ul>
+
+<h3>4.3</h3>
+
+<ul class="spacious">
+  <li>PJAXize forms (<a href="https://github.com/dieulot/instantclick/issues/74">#74</a>).
+</ul>
+
+<h2>Miscellaneous</h2>
+
+<ul class="spacious">
+<li>Bug fixing. Some are <a href="https://github.com/dieulot/instantclick/labels/Bug">on GitHub</a>. For unreported bugs, wading through <a href="https://github.com/defunkt/jquery-pjax/issues">jquery-pjax’s</a> and <a href="https://github.com/rails/turbolinks/issues">Turbolinks’s issues</a> should uncover most of them.
+</ul>
+
+<hr>
+
+<p>If you want to implement one of those features: Unless it’s obvious how it should be done, <a href="https://github.com/dieulot/instantclick/issues">discuss it on GitHub</a> in order to find the best way to do it.
+
+<p class="prev-next">
+  <a class="next" href="changelog.html">Changelog</a>
+  <a class="prev" href="progress-bar.html">Customizing the progress bar</a>
+
+<div class="toc">
+  <h3>Documentation table of contents</h3>
+
+  <h4>Getting started</h4>
+  <div class="chapters">
+    <li>
+      1.
+      <a href="download.html">Get started</a>
+    <li>
+      2.
+      <a href="how-it-works.html">How it works</a>
+    <li>
+      3.
+      <a href="preloading.html">Preloading</a>
+    <li>
+      4.
+      <a href="blacklisting.html">Blacklisting</a>
+    <li>
+      5.
+      <a href="scripts.html">Events and script re-evaluation</a>
+  </div>
+  <h4>Go further</h4>
+  <div class="chapters">
+    <li>
+      1.
+      <a href="assets-changes.html">Tracking assets changes</a>
+    <li>
+      2.
+      <a href="progress-bar.html">Customizing the progress bar</a>
+  </div>
+  <h4>Meta</h4>
+  <div class="chapters">
+    <li>
+      1.
+      Roadmap    <li>
+      2.
+      <a href="changelog.html">Changelog</a>
+  </div>
+</div></article>
+<div id="footer">
+  <p>snap is released under the <a href="license.html">MIT License</a>, © 2016 Alex Mattrick.
+  It is based on the work of <a href="http://instantclick.io">InstantClick</a> from Alexandre Dieulot.</p>
+</div>
+<script src="https://npmcdn.com/@alexlur/snap" data-no-instant></script>

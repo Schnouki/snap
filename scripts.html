@@ -1,0 +1,218 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Events and script re-evaluation in snap</title>
+<meta name="viewport" content="width=768">
+<link href="style.css" rel="stylesheet">
+<link rel="canonical" href="scripts.html">
+
+<header id="header">
+  <div class="logo"><a href="index.html">snap</a></div>
+  <ul>
+    <li><a href="documentation.html">Documentation</a>
+    <li><a href="click-test.html">Click test</a>
+  </ul>
+</header>
+<article class="container">
+<h1>Events and script re-evaluation</h1>
+
+<p>snap technically makes your website a single-page application, so there’s no <code>DOMContentLoaded</code> firing on page changes anymore. Because of this, other scripts might need to be tweaked to work correctly with snap.
+
+<p>snap fires four events to provide hooks into the lifecycle of the page:
+
+<ul>
+  <li><p><code>change</code> : The page is changed, also triggered on initial page load and if snap is not supported. Replaces <code>DOMContentLoaded</code>.
+
+  <p>Its callback can take an optional <code>isInitialLoad</code> argument, it’s a Boolean that will be <code>true</code> when it’s the initial page change or when snap isn’t supported, and <code>false</code> when snap changes the page.
+  <li><p><code>fetch</code> : A page starts preloading. Its callback can take an optional <code>url</code> argument.
+  <li><p><code>receive</code> : A page has been preloaded. You can <a href="scripts.html#receive">modify its content</a>.
+  <li><p><code>wait</code> : The user has clicked on a link, but the page isn’t preloaded yet. Only triggers when the page isn’t displayed instantly.
+</ul>
+
+<p>To listen to an event, for example <code>change</code>, use <code>snap.on</code>:
+
+<div class="gist">
+<div class="gist-file">
+<div class="gist-data gist-syntax">
+<div class="file-data">
+<table cellpadding="0" cellspacing="0" class="lines highlight">
+<tr>
+<td class="line-numbers">
+<span class="line-number" rel="file-gistfile1-js-L1">1</span>
+</td>
+<td class="line-data">
+<pre class="line-pre"><div class="line"><span class="nx">snap</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">'change'</span><span class="p">,</span> <span class="nx">yourCallback</span><span class="p">);</span></div></pre>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<p>You’ll want to call <code>snap.on</code> before <code>snap.init</code>, because the <code>change</code> event is triggered on initial page load too, including when the browser doesn’t support pushState.
+
+<hr>
+
+<p>If you have a script in the <code>&lt;body&gt;</code> that you wish not to re-evaluate when snap displays a page, add it a <code>data-no-instant</code> attribute.
+
+<div class="gist">
+<div class="gist-file">
+<div class="gist-data gist-syntax">
+<div class="file-data">
+<table cellpadding="0" cellspacing="0" class="lines highlight">
+<tr>
+<td class="line-numbers">
+<span class="line-number" rel="file-gistfile1-html-L1">1</span>
+</td>
+<td class="line-data">
+<pre class="line-pre"><div class="line"><span class="nt">&lt;script </span><span class="na">data-no-instant</span><span class="nt">&gt;</span><span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;I’m only run once.&quot;</span><span class="p">);</span><span class="nt">&lt;/script&gt;</span></div></pre>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<p>If other scripts conflict with snap, it’s advised to add a <code>data-no-instant</code> attribute to all of them, then to remove each attribute one by one until you find the culprit. You might get an idea on how to solve compatibility problems by checking examples (in CoffeeScript) on the <a href="http://reed.github.io/turbolinks-compatibility/">Turbolinks Compatibility</a> site.
+
+<hr>
+
+<p>For an example, here’s how to make Google Analytics (late 2013 code) work:
+
+<div class="gist">
+<div class="gist-file">
+<div class="gist-data gist-syntax">
+<div class="file-data">
+<table cellpadding="0" cellspacing="0" class="lines highlight">
+<tr>
+<td class="line-numbers">
+<span class="line-number" rel="file-gistfile1-html-L1">1</span>
+<span class="line-number" rel="file-gistfile1-html-L2">2</span>
+<span class="line-number" rel="file-gistfile1-html-L3">3</span>
+<span class="line-number" rel="file-gistfile1-html-L4">4</span>
+<span class="line-number" rel="file-gistfile1-html-L5">5</span>
+<span class="line-number" rel="file-gistfile1-html-L6">6</span>
+<span class="line-number" rel="file-gistfile1-html-L7">7</span>
+<span class="line-number" rel="file-gistfile1-html-L8">8</span>
+<span class="line-number" rel="file-gistfile1-html-L9">9</span>
+<span class="line-number" rel="file-gistfile1-html-L10">10</span>
+</td>
+<td class="line-data">
+<pre class="line-pre"><div class="line"><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;instantclick.min.js&quot;</span> <span class="na">data-no-instant</span><span class="nt">&gt;&lt;/script&gt;</span></div><div class="line"><span class="nt">&lt;script </span><span class="na">data-no-instant</span><span class="nt">&gt;</span></div><div class="line"><span class="cm">/* Google Analytics code here, without ga(&#39;send&#39;, &#39;pageview&#39;) */</span></div><div class="line">&nbsp;</div><div class="line"><span class="nx">snap</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span></div><div class="line">  <span class="nx">ga</span><span class="p">(</span><span class="s1">&#39;send&#39;</span><span class="p">,</span> <span class="s1">&#39;pageview&#39;</span><span class="p">,</span> <span class="nx">location</span><span class="p">.</span><span class="nx">pathname</span> <span class="o">+</span> <span class="nx">location</span><span class="p">.</span><span class="nx">search</span><span class="p">);</span></div><div class="line"><span class="p">});</span></div><div class="line">&nbsp;</div><div class="line"><span class="nx">snap</span><span class="p">.</span><span class="nx">init</span><span class="p">();</span></div><div class="line"><span class="nt">&lt;/script&gt;</span></div></pre>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<h3 id="receive">Altering content on <code>receive</code></h3>
+
+<p>Sometimes it’s simpler to alter pages on the fly than to rearchitect your back end for snap. <code>receive</code> allows you to do that.
+
+<p>It gets three arguments: <code>url</code>, <code>body</code> and <code>title</code>.
+
+<p><code>url</code> is the address of the page received, it includes the hash. It’s read-only.
+
+<p><code>body</code> is the body object and <code>title</code> is the title text. You can modify those two and return an object with them (or with just one of them to modify only one) if you want to alter pages before they’re displayed.
+
+<p>Here’s an example.
+
+<div class="gist">
+<div class="gist-file">
+<div class="gist-data gist-syntax">
+<div class="file-data">
+<table cellpadding="0" cellspacing="0" class="lines highlight">
+<tr>
+<td class="line-numbers">
+<span class="line-number" rel="file-gistfile1-js-L1">1</span>
+<span class="line-number" rel="file-gistfile1-js-L2">2</span>
+<span class="line-number" rel="file-gistfile1-js-L3">3</span>
+<span class="line-number" rel="file-gistfile1-js-L4">4</span>
+<span class="line-number" rel="file-gistfile1-js-L5">5</span>
+<span class="line-number" rel="file-gistfile1-js-L6">6</span>
+<span class="line-number" rel="file-gistfile1-js-L7">7</span>
+<span class="line-number" rel="file-gistfile1-js-L8">8</span>
+<span class="line-number" rel="file-gistfile1-js-L9">9</span>
+<span class="line-number" rel="file-gistfile1-js-L10">10</span>
+<span class="line-number" rel="file-gistfile1-js-L11">11</span>
+<span class="line-number" rel="file-gistfile1-js-L12">12</span>
+</td>
+<td class="line-data">
+<pre class="line-pre"><div class="line">snap.on(<span class="s1"><span class="pds">&#39;</span>receive<span class="pds">&#39;</span></span>, (<span class="vpf">url</span>, <span class="vpf">body</span>, <span class="vpf">title</span>) => {
+</div><div class="line">  <span class="k">const</span> dont_display <span class="k">=</span> body.querySelector(<span class="s1"><span class="pds">&#39;</span>#dont_display_me<span class="pds">&#39;</span></span>);
+</div><div class="line">  <span class="k">if</span> (dont_display) {
+</div><div class="line">    dont_display.<span class="s3">setAttribute</span>(<span class="s1"><span class="pds">&#39;</span>hidden<span class="pds">&#39;</span></span>, <span class="s1"><span class="pds">&#39;</span><span class="pds">&#39;</span></span>);
+</div><div class="line">  }
+</div><div class="line">  title <span class="k">+=</span> <span class="s1"><span class="pds">&#39;</span> (loaded with snap)<span class="pds">&#39;</span></span>;
+</div><div class="line">
+</div><div class="line">  <span class="k">return</span> {
+</div><div class="line">    body<span class="k">:</span> body,
+</div><div class="line">    title<span class="k">:</span> title
+</div><div class="line">  };
+</div><div class="line">});
+</div></pre>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<p>Keep in mind the body object here is <code>body</code> and not <code>document.body</code>!
+
+<p>When you have more than one callback listening to <code>receive</code>, each subsequent callback will get the last altered content.
+
+<p>If you don’t want to alter the page on <code>receive</code>, either don’t return anything or return <code>false</code>.
+
+<p class="prev-next">
+  <a class="next" href="assets-changes.html">Tracking assets changes</a>
+  <a class="prev" href="blacklisting.html">Blacklisting</a>
+
+<div class="toc">
+  <h3>Documentation table of contents</h3>
+
+  <h4>Getting started</h4>
+  <div class="chapters">
+    <li>
+      1.
+      <a href="download.html">Get started</a>
+    <li>
+      2.
+      <a href="how-it-works.html">How it works</a>
+    <li>
+      3.
+      <a href="preloading.html">Preloading</a>
+    <li>
+      4.
+      <a href="blacklisting.html">Blacklisting</a>
+    <li>
+      5.
+      Events and script re-evaluation  </div>
+  <h4>Go further</h4>
+  <div class="chapters">
+    <li>
+      1.
+      <a href="assets-changes.html">Tracking assets changes</a>
+    <li>
+      2.
+      <a href="progress-bar.html">Customizing the progress bar</a>
+  </div>
+  <h4>Meta</h4>
+  <div class="chapters">
+    <li>
+      1.
+      <a href="roadmap.html">Roadmap</a>
+    <li>
+      2.
+      <a href="changelog.html">Changelog</a>
+  </div>
+</div></article>
+<div id="footer">
+  <p>snap is released under the <a href="license.html">MIT License</a>, © 2016 Alex Mattrick.
+  It is based on the work of <a href="http://instantclick.io">InstantClick</a> from Alexandre Dieulot.</p>
+</div>
+<script src="https://npmcdn.com/@alexlur/snap" data-no-instant></script>

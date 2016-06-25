@@ -1,0 +1,119 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Download snap and get started</title>
+<meta name="viewport" content="width=768">
+<link href="style.css" rel="stylesheet">
+<link rel="canonical" href="download.html">
+
+<header id="header">
+  <div class="logo"><a href="index.html">snap</a></div>
+  <ul>
+    <li><a href="documentation.html">Documentation</a>
+    <li><a href="click-test.html">Click test</a>
+  </ul>
+</header>
+<article class="container">
+<h1>Get started</h1>
+
+<h2>Download snap</h2>
+
+<p>The latest version is <b>3.1.5</b>, released on 2016/06/25 (<a href="changelog.html">Changelog</a>).
+
+<table id="downloads">
+  <tr>
+    <td><a href="https://npmcdn.com/@alexlur/snap/build/snap.min.js" class="btn btn-big">Production version</a>
+    <td><a href="https://npmcdn.com/@alexlur/snap" class="btn btn-big">Development version</a>
+</table>
+
+<h3>Other download options</h3>
+
+<p>The <a href="https://github.com/alexlur/snap">latest development version</a> is on GitHub.
+
+<p>npm: <code>npm install @alexlur/snap</code>
+
+<h2>Initialize snap</h2>
+
+<p>Include snap and initialize it near the end of your pages:
+
+<div class="gist">
+<div class="gist-file">
+<div class="gist-data gist-syntax">
+<div class="file-data">
+<table cellpadding="0" cellspacing="0" class="lines highlight">
+<tr>
+<td class="line-numbers">
+<span class="line-number" rel="file-gistfile1-html-L1">1</span>
+<span class="line-number" rel="file-gistfile1-html-L2">2</span>
+<span class="line-number" rel="file-gistfile1-html-L3">3</span>
+<span class="line-number" rel="file-gistfile1-html-L4">4</span>
+<span class="line-number" rel="file-gistfile1-html-L5">5</span>
+</td>
+<td class="line-data">
+<pre class="line-pre"><div class="line" id="file-gistfile1-html-LC1">...</div><div class="line" id="file-gistfile1-html-LC2"><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;snap.min.js&quot;</span> <span class="na">data-no-instant</span><span class="nt">&gt;&lt;/script&gt;</span></div><div class="line" id="file-gistfile1-html-LC3"><span class="nt">&lt;script </span><span class="na">data-no-instant</span><span class="nt">&gt;</span><span class="nx">snap</span><span class="p">.</span><span class="nx">init</span><span class="p">();</span><span class="nt">&lt;/script&gt;</span></div><div class="line"><span class="nt">&lt;/body&gt;</span></div><div class="line"><span class="nt">&lt;/html&gt;</span></div></pre>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<p>snap is now activated on your website. Read those articles to get a sufficient level of proficiency with snap:
+
+<ul>
+  <li><a href="how-it-works.html">How snap works</a> will give you the correct mental model to deal with snap’s mechanism.
+  <li><a href="preloading.html">Preloading</a> will show you the different preloading methods available.
+  <li><a href="blacklisting.html">Blacklisting</a> because not all links should be preloaded.
+  <li><a href="scripts.html">Events and script re-evaluation</a> will help you make snap play nice with the rest of your JavaScript.
+</ul>
+
+<p>Snap isn’t always “plug and play”, you may need to adapt your site. That’s why reading the above articles is mandatory.
+
+<p class="prev-next">
+  <a class="next" href="how-it-works.html">How it works</a>
+  <a class="prev" href="documentation.html">Documentation</a>
+
+<div class="toc">
+  <h3>Documentation table of contents</h3>
+
+  <h4>Getting started</h4>
+  <div class="chapters">
+    <li>
+      1.
+      Get started    <li>
+      2.
+      <a href="how-it-works.html">How it works</a>
+    <li>
+      3.
+      <a href="preloading.html">Preloading</a>
+    <li>
+      4.
+      <a href="blacklisting.html">Blacklisting</a>
+    <li>
+      5.
+      <a href="scripts.html">Events and script re-evaluation</a>
+  </div>
+  <h4>Go further</h4>
+  <div class="chapters">
+    <li>
+      1.
+      <a href="assets-changes.html">Tracking assets changes</a>
+    <li>
+      2.
+      <a href="progress-bar.html">Customizing the progress bar</a>
+  </div>
+  <h4>Meta</h4>
+  <div class="chapters">
+    <li>
+      1.
+      <a href="roadmap.html">Roadmap</a>
+    <li>
+      2.
+      <a href="changelog.html">Changelog</a>
+  </div>
+</div></article>
+<div id="footer">
+  <p>snap is released under the <a href="license.html">MIT License</a>, © 2016 Alex Mattrick.
+  It is based on the work of <a href="http://instantclick.io">InstantClick</a> from Alexandre Dieulot.</p>
+</div>
+<script src="https://npmcdn.com/@alexlur/snap" data-no-instant></script>

@@ -1,10 +1,9 @@
 <!doctype html>
 <meta charset="utf-8">
-<title>snap</title>
+<title>Snap</title>
 <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i" rel="stylesheet">
 <meta name="viewport" content="width=768">
 <link href="style.css" rel="stylesheet">
-<meta name="description" content="InstantClick makes following links in your website instant.">
 <link rel="canonical" href="index.html">
 
 <header id="header">
@@ -15,7 +14,7 @@
   </ul>
 </header>
 <article class="container">
-<p class="intro"><span>snap</span> preloads your website contents intelligently.
+<p class="intro"><span>Snap</span> preloads your website contents intelligently.
 
 <p class="latest-version"><em class="notice">25 June:</em> 3.1.5: Added support for pre-fetching images and caching pages.
 <br><a href="download.html">Download</a> &nbsp; <a href="changelog.html">Changelog</a>
@@ -26,9 +25,9 @@
 
 <h2>How does it work</h2>
 
-<p>Latency is inevitable with today’s internet architecture so InstantClick cheats by preloading links you are likely to click on.
+<p>Latency is inevitable with today’s internet architecture so Snap cheats by preloading links you are likely to click on.
 
-<p>Before visitors click on a link, they hover over that link. Between these two events, 200 ms to 300 ms usually pass by (<a href="click-test.html">test yourself here</a>). InstantClick makes use of that time to preload the page, so that the page is already there when you click.
+<p>Before visitors click on a link, they hover over that link. Between these two events, 200 ms to 300 ms usually pass by (<a href="click-test.html">test yourself here</a>). Snap makes use of that time to preload the page, so that the page is already there when you click.
 
 <p>On mobile devices, preloading starts on “touchstart”, letting 300 ms (Android) to 450 ms (iOS) for preloading the page.<sup id="note-3g-back"><a href="index.html#note-3g">2</a></sup>
 
@@ -40,7 +39,7 @@
 
 <hr>
 
-<p><code>[placeholder]</code> uses pushState and Ajax (a combo known as <a href="https://github.com/defunkt/jquery-pjax">pjax</a>), replacing only the body and the title in the head.
+<p>Snap uses pushState and Ajax (a combo known as <a href="https://github.com/defunkt/jquery-pjax">pjax</a>), replacing only the body and the title in the head.
 
 <p>Ajax brings two nice benefits in and of itself:
 <ul>
@@ -48,32 +47,8 @@
   <li>You don’t get a white flash while your browser is waiting for a page to display, making your website <em>feel</em> faster.
 </ul>
 
-<p>InstantClick supports the following browsers’ versions:
-
-<table class="support">
-  <tr>
-    <th>IE
-    <th>Firefox
-    <th>Chrome
-    <th>Safari
-    <th>Opera
-
-    <th>iOS Safari
-    <th>Android Browser
-    <th>Chrome for Android
-  <tr>
-    <td>10+
-    <td>4.0+
-    <td>5+
-    <td>5.0+
-    <td>11.5+
-
-    <td>5.0+
-    <td>4.4+
-    <td>18+
-</table>
-
-<p>According to <a href="http://caniuse.com/#search=pushState">Can I use</a>, over 80% of the world supports InstantClick. When a browser doesn't support it, InstantClick fully degrades.
+<p>Snap supports browsers as old as Internet Explorer 10. <strong>However</strong>, if you are working with Internet Explorer (all versions) or a browser without support for <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map">ES6 Map</a>, you need to bring your own <a href="https://github.com/paulmillr/es6-shim">polyfill</a>.
+<p>According to <a href="http://caniuse.com/#search=pushState">Can I use</a>, over 80% of the world supports Snap. When a browser doesn't support it, Snap fully degrades.
 
 <h2>Getting started</h2>
 
@@ -90,4 +65,4 @@
   <p>snap is released under the <a href="license.html">MIT License</a>, © 2016 Alex Mattrick.
   It is based on the work of <a href="http://instantclick.io">InstantClick</a> from Alexandre Dieulot.</p>
 </div>
-<script src="https://npmcdn.com/@alexlur/instantclick@3.1.6" data-no-instant></script>
+<script src="https://npmcdn.com/@alexlur/snap" data-no-instant></script>

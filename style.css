@@ -8,15 +8,7 @@ a {
 	color: #559df3
 }
 a:visited {
-	color: #911
-}
-::selection {
-	background: rgba(187, 17, 17, .9);
-	color: white
-}
-::-moz-selection {
-	background: rgba(187, 17, 17, .9);
-	color: white
+	color: #1c72d9;
 }
 #instantclick-bar {
 	background: #559df3
@@ -67,6 +59,9 @@ h1 {
 	font-size: 1.33em;
 	color: #559df3;
 	margin-bottom: .56em
+}
+h1, h2, h3, h4, strong {
+	font-weight: 600;
 }
 h1:first-child {
 	margin-top: 0
