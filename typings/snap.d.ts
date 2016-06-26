@@ -1,12 +1,19 @@
 type PageEvent = 'fetch' | 'receive' | 'restore' | 'change' | 'wait' | 'progress';
 type PreloadMode = 'mousedown' | 'mouseover';
 type Callback = () => any;
-type ProgressCallback = (loaded: number, total: number) => any;
-type ReceiveCallback = (url: string, body: HTMLBodyElement, title: string) => (boolean|{
-	body?: HTMLBodyElement,
-	title?: string
-});
-type ChangeCallback = (isInitialLoad: boolean) => any;
+
+interface ProgressCallback {
+	(loaded: number, total: number): any;
+}
+interface ReceiveCallback {
+	(url: string, body: HTMLBodyElement, title: string): (boolean|{
+		body?: HTMLBodyElement,
+		title?: string
+	});
+}
+interface ChangeCallback {
+	(isInitialLoad: boolean): any;
+}
 
 interface HistoryRecord {
 	body: HTMLBodyElement;
@@ -32,4 +39,8 @@ declare module '@alexlur/snap' {
 	export function off(eventType: string): void;
 
 	export const supported: boolean;
+}
+
+declare module 'package.json' {
+	export const version: number;
 }

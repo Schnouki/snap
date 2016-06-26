@@ -1,6 +1,6 @@
 {
   "name": "@alexlur/snap",
-  "version": "3.1.8",
+  "version": "3.1.9",
   "description": "Snap JavaScript library",
   "main": "build/snap.umd.js",
   "jsnext:main": "build/snap.es.js",
