@@ -21,7 +21,7 @@
 
 <table id="downloads">
   <tr>
-    <td><a href="https://npmcdn.com/@alexlur/snap/build/snap.min.js" class="btn btn-big">Production version</a>
+    <td><a href="https://npmcdn.com/@alexlur/snap/build/snap.min.js" class="btn btn-big">Production version<br><small>around 3 kB gzipped</small></a>
     <td><a href="https://npmcdn.com/@alexlur/snap" class="btn btn-big">Development version</a>
 </table>
 
@@ -31,9 +31,12 @@
 
 <p>npm: <code>npm install @alexlur/snap</code>
 
-<h2>Initialize snap</h2>
-
-<p>Include snap and initialize it near the end of your pages:
+<h2>Initialize Snap</h2>
+<p class="warning"><strong>Note:</strong> Remember to include a polyfill for
+  <a href="https://github.com/mathiasbynens/String.prototype.includes">
+    <code>String#includes</code></a>. ES6 Map/Set should also be included if you are targeting IE 10 or lower.
+</p>
+<p>Include Snap and initialize it near the end of your pages:</p>
 
 <div class="gist">
 <div class="gist-file">
@@ -58,10 +61,10 @@
 </div>
 </div>
 
-<p>snap is now activated on your website. Read those articles to get a sufficient level of proficiency with snap:
+<p>Snap is now activated on your website. Read those articles to get a sufficient level of proficiency with snap:
 
 <ul>
-  <li><a href="how-it-works.html">How snap works</a> will give you the correct mental model to deal with snap’s mechanism.
+  <li><a href="how-it-works.html">How Snap works</a> will give you the correct mental model to deal with its mechanism.
   <li><a href="preloading.html">Preloading</a> will show you the different preloading methods available.
   <li><a href="blacklisting.html">Blacklisting</a> because not all links should be preloaded.
   <li><a href="scripts.html">Events and script re-evaluation</a> will help you make snap play nice with the rest of your JavaScript.

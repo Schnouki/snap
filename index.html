@@ -16,16 +16,15 @@
 <article class="container">
 <p class="intro"><span>Snap</span> preloads your website contents intelligently.
 
-<p class="latest-version"><em class="notice">25 June:</em> 3.1.5: Added support for pre-fetching images and caching pages.
+<p class="latest-version"><em class="notice">June 26:</em> 3.1.9: Added support for pre-fetching images and caching pages.
 <br><a href="download.html">Download</a> &nbsp; <a href="changelog.html">Changelog</a>
 
 <h2>Why?</h2>
+<p>Around 200 to 300 miliseconds pass between visitors hovering over a link and clicking it; Snap preloads the web page in this period so the page can be displayed instantly when clicked.</p>
 
-<p>Despite huge bandwidth increases, websites don’t get much faster. This is because the biggest bottleneck in loading web pages is latency.<sup id="note-latency-back"><a href="index.html#note-latency">1</a></sup>
+<h2>How?</h2>
 
-<h2>How does it work</h2>
-
-<p>Latency is inevitable with today’s internet architecture so Snap cheats by preloading links you are likely to click on.
+<p>Despite huge bandwidth increases, websites don’t get much faster. This is because the biggest bottleneck in loading web pages is latency.<sup id="note-latency-back"><a href="index.html#note-latency">1</a></sup> Latency is inevitable with today’s internet architecture so Snap cheats by preloading links you are likely to click on.
 
 <p>Before visitors click on a link, they hover over that link. Between these two events, 200 ms to 300 ms usually pass by (<a href="click-test.html">test yourself here</a>). Snap makes use of that time to preload the page, so that the page is already there when you click.
 
@@ -47,7 +46,7 @@
   <li>You don’t get a white flash while your browser is waiting for a page to display, making your website <em>feel</em> faster.
 </ul>
 
-<p>Snap supports browsers as old as Internet Explorer 10. <strong>However</strong>, if you are working with Internet Explorer (all versions) or a browser without support for <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map">ES6 Map</a>, you need to bring your own <a href="https://github.com/paulmillr/es6-shim">polyfill</a>.
+<p>Snap supports browsers as old as Internet Explorer 10. <strong>However</strong>, if you are working with Internet Explorer (all versions) or a browser without support for ES6 Map/Set, you need to bring your own <a href="https://github.com/paulmillr/es6-shim">polyfill</a>.
 <p>According to <a href="http://caniuse.com/#search=pushState">Can I use</a>, over 88% of the world supports Snap. When a browser doesn’t support it, Snap fully degrades.
 
 <h2>Getting started</h2>
@@ -59,7 +58,7 @@
 <ol id="footnotes">
   <li id="note-latency">Check out <a href="http://www.igvita.com/2012/07/19/latency-the-new-web-performance-bottleneck/">Latency: The New Web Performance Bottleneck</a> for a good summary about bandwidth vs. latency effects on web pages. <a href="index.html#note-latency-back" class="noteBack">↩</a>
   <li id="note-3g">On 3G, requests <a href="https://twitter.com/Dieulot/status/427591050941964288">usually</a> take 200 ms. <a href="index.html#note-3g-back" class="noteBack">↩</a>
-  <li id="note-progress-bar">The progress bar <em>may</em> not indicate the real status, depending on whether your server sends <code>Content-Length</code> in the HTTP header. <a href="index.html#note-progress-bar-back" class="noteBack">↩</a>
+  <li id="note-progress-bar">The progress bar may <em>not</em> sometimes indicate the real status, depending on whether your server sends <code>Content-Length</code> in the HTTP header. <a href="index.html#note-progress-bar-back" class="noteBack">↩</a>
 </ol></article>
 <div id="footer">
   <p>snap is released under the <a href="license.html">MIT License</a>, © 2016 Alex Mattrick.
