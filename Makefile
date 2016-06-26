@@ -1,6 +1,6 @@
 name=snap
 
-build/$(name).umd.js: src/index.ts src/$(name).ts src/loading-indicator.ts
+build/$(name).umd.js: src/*.ts
 	rollup -c
 
 build/$(name).min.js: build/$(name).umd.js

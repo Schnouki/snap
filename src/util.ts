@@ -49,7 +49,7 @@ export function fetchImages(images: HTMLCollectionOf<HTMLImageElement>): HTMLIma
 	for (const node of images) {
 		const img = new Image();
 		img.src = (<HTMLImageElement> node).src;
-		results.push(results);
+		results.push(img);
 	}
 	return results;
 }
