@@ -36,7 +36,7 @@ $nocache = '&amp;nocache=' . microtime(true) * 10000;
 $append = '&amp;on=' . $preload_on . $nocache;
 
 if (isset($_GET['wait'])) {
-  usleep((int)$_GET['wait'] * 1000);
+  usleep((int)$_GET['wait']);
 }
 ?>
 <!doctype html>
@@ -46,7 +46,7 @@ if (isset($_GET['wait'])) {
 <?php if ($page == 'entities'): ?>
 Entities in the &#8249;title&rsaquo;
 <?php else: ?>
-<?= date('H : i : s') ?> . <?php printf("%03d", microtime() * 1000) ?>
+<?= date('H:i:s') ?>.<?php printf("%03d", microtime() * 1000) ?>
 <?php endif ?>
 </title>
 <?php endif ?>
@@ -84,43 +84,42 @@ endif ?>
 </div>
 
 <hr>
+<div id="container">
+  <table id="toc">
+    <tr>
+      <th>Page</th>
+      <th colspan="<?= count($delays) ?>">Delays (in milliseconds)</th>
 
-<table>
-  <tr>
-    <th>Page</th>
-    <th colspan="<?= count($delays) ?>">Delays (in milliseconds)</th>
+  <?php foreach ($pages as $name => $row): ?>
+    <tr>
+      <td><a href="?page=<?= $row . $append ?>"><?= $name ?></a>
+  <?php if ($row == 'nprogress'): ?>
+          <a data-no-instant href="?page=<?= $row . $append ?>">↻</a>
+  <?php endif ?>
+  <?php foreach ($delays as $delay): ?>
+      <td><a href="?page=<?= $row ?>&amp;wait=<?= $delay . $append ?>"><small><?= $delay ?></small></a>
+  <?php endforeach;
+  endforeach ?>
+  </table>
 
-<?php foreach ($pages as $name => $row): ?>
-  <tr>
-    <td><a href="?page=<?= $row . $append ?>"><?= $name ?></a>
-<?php if ($row == 'nprogress'): ?>
-        <a data-no-instant href="?page=<?= $row . $append ?>">↻</a>
-<?php endif ?>
-<?php foreach ($delays as $delay): ?>
-    <td><a href="?page=<?= $row ?>&amp;wait=<?= $delay . $append ?>"><small><?= $delay ?></small></a>
-<?php endforeach;
-endforeach ?>
-</table>
-
-<hr>
-
-<?php include('pages/' . $page . '.html') ?>
-
+  <div id="page">
+    <?php include('pages/' . $page . '.html') ?>
+  </div>
+</div>
 <div id="divDebug"></div>
 
 
-
-<script src="instantclick.js.php?<?= $nocache ?>" data-no-instant></script>
+<script src="snap.js.php?<?= $nocache ?>" data-no-instant></script>
 
 
 <?php // NProgress specific code
 if ($page == 'nprogress'): ?>
 <script data-no-instant>
-InstantClick.on('wait', function() {
+Snap.on('wait', function() {
   NProgress.start()
 })
 
-InstantClick.on('change', function(isInitialLoad) {
+Snap.on('change', function(isInitialLoad) {
   if (isInitialLoad) {
     addDebugMessage('NProgress on')
   }
@@ -130,24 +129,25 @@ InstantClick.on('change', function(isInitialLoad) {
 <?php endif ?>
 
 <script data-no-instant>
-var $debugMessages = ''
+var $debugMessages = '';
 
 function addDebugMessage(message) {
   var divDebug = document.getElementById('divDebug')
-  if (!divDebug) {
-    return
-  }
-  $debugMessages = message + '<br>' + (!divDebug.innerHTML && $debugMessages ? '<hr>' : '') + $debugMessages
-  divDebug.innerHTML = $debugMessages
+  if (!divDebug) return;
+  $debugMessages = '<div class="item">' + message + '<br>' +
+    (!divDebug.innerHTML && $debugMessages ? '<hr>' : '') + '</div>'
+  + $debugMessages;
+
+  divDebug.innerHTML = $debugMessages;
 }
 
-InstantClick.on('fetch', function() {
-  addDebugMessage('<small><small>Event: fetch</small></small>')
+Snap.on('fetch', function() {
+  addDebugMessage('Event: <strong>fetch</strong>')
 })
 
-InstantClick.on('receive', function(url, body, title) {
+Snap.on('receive', function(url, body, title) {
   if (url.indexOf('#alter') > -1) {
-    addDebugMessage('<small><small>Event: receive (altered)</small></small>')
+    addDebugMessage('Event: <strong>receive</strong> (altered)')
     var elementToAlter = body.querySelector('#to_alter')
     if (elementToAlter) {
       elementToAlter.innerHTML = '<b>Altered!</b>'
@@ -159,18 +159,18 @@ InstantClick.on('receive', function(url, body, title) {
       title: title
     }
   }
-  addDebugMessage('<small><small>Event: receive</small></small>')
+  addDebugMessage(`Event: <strong>receive</strong>: ${url}, '${title || ''}'`);
 })
 
-InstantClick.on('wait', function() {
-  addDebugMessage('Event: wait')
+Snap.on('wait', function() {
+  addDebugMessage('Event: <strong>wait</strong>');
 })
 
-InstantClick.on('change', function(isInitialLoad) {
-  addDebugMessage('Event: change' + (isInitialLoad ? ' (initial load)' : ''))
+Snap.on('change', function(isInitialLoad) {
+  addDebugMessage('Event: <strong>change</strong>' + (isInitialLoad ? ' (initial load)' : ''))
 })
 
-InstantClick.init(<?php
+Snap.init(<?php
 if ($preload_on == 'mousedown') {
   echo "'mousedown'";
 }
