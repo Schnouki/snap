@@ -1,4 +1,5 @@
 type PageEvent = 'fetch' | 'receive' | 'restore' | 'change' | 'wait' | 'progress';
+type PreloadMode = 'mousedown' | 'mouseover';
 type Callback = () => any;
 type ProgressCallback = (loaded: number, total: number) => any;
 type ReceiveCallback = (url: string, body: HTMLBodyElement, title: string) => (boolean|{
@@ -14,7 +15,7 @@ interface HistoryRecord {
 }
 
 interface Config {
-	preloadingMode?: 'mousedown' | 'mouseover';
+	preloadMode?: PreloadMode;
 	delay?: number;
 	static?: boolean;
 }

@@ -1,6 +1,12 @@
 # Snap
 PJAX library based on InstantClick with bug fixes and added functionalities such as image caching.
 
+```bash
+npm install @alexlur/snap
+```
+
+Snap depends on `String.prototype.includes`, ES6 Map and Set.
+
 ## Build
 ```bash
 npm install
@@ -10,11 +16,12 @@ make all
 ## API
 ```typescript
 import * as Snap from '@alexlur/snap';
+import 'es6-shim'; // For non-ES6 browsers.
 
 Snap.init({
   // Preload can be triggered either when users clicks the link, or
   // hover it. For mobile users it would be a touch event.
-  preloadingMode?: 'mousedown' | 'mouseover' [default],
+  preloadMode?: 'mousedown' | 'mouseover' [default],
 
   // Preload will start after the period of delay (miliseconds) have
   // passed. Only available in mousedown mode.
@@ -22,7 +29,7 @@ Snap.init({
 
   // In static mode, caches do not expire and users will always see
   // the same content as long as they stay in the page.
-  static: false [default]
+  static?: false [default]
 });
 
 Snap.on('receive', function (url: string, body: HTMLBodyElement, title: string) {

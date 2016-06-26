@@ -5,7 +5,8 @@
 
 /* global orientation */
 
-import { on, supported } from './snap';
+import { on } from './callbacks';
+import { supported } from './snap';
 
 let $container: HTMLDivElement;
 let $element: HTMLDivElement;
@@ -27,8 +28,8 @@ function init() {
 
 	if ($hasTouch) {
 		updatePositionAndScale();
-		addEventListener('resize', updatePositionAndScale);
-		addEventListener('scroll', updatePositionAndScale);
+		window.addEventListener('resize', updatePositionAndScale);
+		window.addEventListener('scroll', updatePositionAndScale);
 	}
 }
 
