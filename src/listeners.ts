@@ -12,6 +12,7 @@ import {
 	$preloadMode,
 	$trackedAssets,
 	$delayBeforePreload,
+	$rootSelector,
 } from './snap';
 
 import {
@@ -114,7 +115,10 @@ export function readystatechange() {
 		const doc = document.implementation.createHTMLDocument('');
 		doc.documentElement.innerHTML = removeNoscriptTags($xhr.responseText);
 		$page.title = doc.title;
-		$page.body = <HTMLBodyElement>doc.body;
+		$page.body = <HTMLElement>doc.body;
+		if ($rootSelector) {
+			$page.body = $page.body.querySelector($rootSelector);
+		}
 
 		const alteredOnReceive = trigger(
 			'receive', $page.url, $page.body, $page.title

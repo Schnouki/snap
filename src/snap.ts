@@ -25,7 +25,7 @@ export let $xhr: XMLHttpRequest;
 export const $page = {
 	url: '',
 	title: '',
-	body: <HTMLBodyElement> undefined
+	body: <HTMLElement> undefined
 };
 
 export const $state = {
@@ -48,11 +48,16 @@ export const $trackedAssets: Set<HTMLElement|string> = new Set();
 let $isDynamic = true;
 export let $preloadMode: PreloadMode = 'mouseover';
 export let $delayBeforePreload: number;
+export let $rootSelector: string;
 
 ////////// HELPERS //////////
 
 export function changePage(title: string, body, newUrl: string, scrollY?: number, pop?: boolean) {
-	document.documentElement.replaceChild(body, document.body);
+	let target = document.body;
+	if ($rootSelector)
+		target = target.querySelector($rootSelector);
+
+	target.parentNode.replaceChild(body, target);
 	// We cannot just use `document.body = doc.body`, it causes Safari (tested
 	// 5.1, 6.0 and Mobile 7.0) to execute script tags directly.
 
@@ -258,10 +263,11 @@ export function init(config: Config = {}) {
 	}
 
 	$isDynamic = !config.static;
+	$rootSelector = config.rootSelector || null;
 
 	$state.hashlessLocation = removeHash(location.href);
 	const record: HistoryRecord = {
-		body: <HTMLBodyElement> document.body,
+		body: <HTMLElement> document.body,
 		title: document.title,
 		scrollY: pageYOffset
 	};

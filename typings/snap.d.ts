@@ -25,6 +25,7 @@ interface Config {
 	preloadMode?: PreloadMode;
 	delay?: number;
 	static?: boolean;
+	rootSelector?: string;
 }
 
 declare module '@alexlur/snap' {
